@@ -168,7 +168,8 @@ size_t I2SAudioSpeaker::play(const uint8_t *data, size_t length) {
   //}
 
   // Play the mono buffer directly
-  M5.Speaker.playRaw(mono, num_samples, sample_rate);
+  //M5.Speaker.playRaw(mono, num_samples, sample_rate);
+  M5.Speaker.playWav(mono, num_samples, sample_rate);
   return length;
 }
 
