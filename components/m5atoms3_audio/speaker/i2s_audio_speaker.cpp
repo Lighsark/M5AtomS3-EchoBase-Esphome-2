@@ -21,13 +21,13 @@ void I2SAudioSpeaker::setup() {
   ESP_LOGI(TAG, "setup");
   auto cfg = M5.Speaker.config();
   cfg.task_priority = 15;
-  cfg.dma_buf_count = this->dma_buf_count_;
-  cfg.dma_buf_len = this->buffer_size_;
-  cfg.sample_rate = this->sample_rate_;
+  //cfg.dma_buf_count = this->dma_buf_count_;
+  //cfg.dma_buf_len = this->buffer_size_;
+  //cfg.sample_rate = this->sample_rate_;
   
   M5.Speaker.config(cfg);
   M5.Speaker.begin();
-  M5.Speaker.setVolume(200);
+  M5.Speaker.setVolume(128);
 
   // this->buffer_queue_ = xQueueCreate(BUFFER_COUNT, sizeof(DataEvent));
   // this->event_queue_ = xQueueCreate(BUFFER_COUNT, sizeof(TaskEvent));
