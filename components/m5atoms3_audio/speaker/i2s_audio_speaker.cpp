@@ -24,7 +24,6 @@ void I2SAudioSpeaker::setup() {
   cfg.dma_buf_count = this->dma_buf_count_;
   cfg.dma_buf_len = this->buffer_size_ / 2;
   cfg.sample_rate = this->sample_rate_;
-  cfg.bits_per_sample = 16;
   
   M5.Speaker.config(cfg);
   M5.Speaker.begin();
