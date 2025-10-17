@@ -186,26 +186,32 @@ void I2SAudioMediaPlayer::stop_() {
 }
 
 void I2SAudioMediaPlayer::on_audio_data_(const uint8_t *data, size_t length, int sample_rate, int channels, int bits_per_sample) {
-  if (channels == 2) {
+  ESP_LOGI(TAG, "on_audio_data_: length=%u, sample_rate=%d, channels=%d, bits_per_sample=%d", (unsigned)length, sample_rate, channels, bits_per_sample);
 
+  if (channels == 2) {
+    ESP_LOGI(TAG, "Downmixing stereo to mono");
     M5.Speaker.setVolume(this->volume * 210);
-    
-    // Downmix stereo to mono
+
     size_t num_samples = length / sizeof(int16_t) / 2;
     std::vector<int16_t> mono(num_samples);
     const int16_t* stereo = reinterpret_cast<const int16_t*>(data);
     for (size_t i = 0; i < num_samples; ++i) {
       mono[i] = (stereo[2*i] + stereo[2*i+1]) / 2;
     }
-    // Play mono buffer
+    ESP_LOGI(TAG, "First 8 mono samples after downmix:");
+    for (size_t i = 0; i < 8 && i < num_samples; ++i) {
+      ESP_LOGI(TAG, "  [%u] %d", (unsigned)i, mono[i]);
+    }
     M5.Speaker.playRaw(mono.data(), num_samples, sample_rate);
-    //my_speaker->playRaw(mono.data(), num_samples, sample_rate);
   } else {
-    // Play mono buffer directly
+    ESP_LOGI(TAG, "Playing mono buffer directly");
     size_t num_samples = length / sizeof(int16_t);
     const int16_t* mono = reinterpret_cast<const int16_t*>(data);
+    ESP_LOGI(TAG, "First 8 mono samples:");
+    for (size_t i = 0; i < 8 && i < num_samples; ++i) {
+      ESP_LOGI(TAG, "  [%u] %d", (unsigned)i, mono[i]);
+    }
     M5.Speaker.playRaw(mono, num_samples, sample_rate);
-    //my_speaker->playRaw(mono, num_samples, sample_rate);
   }
 }
   
