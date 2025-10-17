@@ -22,7 +22,7 @@ void I2SAudioSpeaker::setup() {
   auto cfg = M5.Speaker.config();
   cfg.task_priority = 15;
   cfg.dma_buf_count = this->dma_buf_count_;
-  cfg.dma_buf_len = this->buffer_size_ / 2;
+  cfg.dma_buf_len = this->buffer_size_;
   cfg.sample_rate = this->sample_rate_;
   
   M5.Speaker.config(cfg);
