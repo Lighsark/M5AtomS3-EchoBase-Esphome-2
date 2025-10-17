@@ -1,7 +1,7 @@
 #include "i2s_audio_media_player.h"
 
 // #ifdef USE_ESP32_FRAMEWORK_ARDUINO
-
+#include <M5Unified.h>
 #include "esphome/core/log.h"
 
 namespace esphome {
@@ -12,7 +12,6 @@ static const char *const TAG = "audio";
 void I2SAudioMediaPlayer::control(const media_player::MediaPlayerCall &call) {
   if (call.get_media_url().has_value()) {
      ESP_LOGCONFIG(TAG, " CurrentUrl:", call.get_media_url());
-    ESP_LOGCONFIG(TAG, "  Current Url:", this->external_dac_channels_);
     this->current_url_ = call.get_media_url();
 
     if (this->state == media_player::MEDIA_PLAYER_STATE_PLAYING && this->audio_ != nullptr) {
@@ -27,7 +26,8 @@ void I2SAudioMediaPlayer::control(const media_player::MediaPlayerCall &call) {
   }
   if (call.get_volume().has_value()) {
     this->volume = call.get_volume().value();
-    this->set_volume_(volume);
+    M5.Speaker.setVolume(this->volume * 210)
+    this->set_volume_(this->volume);
     this->unmute_();
   }
   if (this->i2s_state_ != I2S_STATE_RUNNING) {
@@ -74,6 +74,7 @@ void I2SAudioMediaPlayer::control(const media_player::MediaPlayerCall &call) {
         float new_volume = this->volume - 0.1f;
         if (new_volume < 0.0f)
           new_volume = 0.0f;
+        M5.Speaker.setVolume(new_volume * 210);
         this->set_volume_(new_volume);
         this->unmute_();
         break;
@@ -84,21 +85,20 @@ void I2SAudioMediaPlayer::control(const media_player::MediaPlayerCall &call) {
 }
 
 void I2SAudioMediaPlayer::mute_() {
-  if (this->mute_pin_ != nullptr) {
-    this->mute_pin_->digital_write(true);
-  } else {
+  
+    M5.Speaker.setVolume(0);
+    this->unmuted_volume_ = this->volume;
     this->set_volume_(0.0f, false);
-  }
+  
   this->muted_ = true;
 }
 void I2SAudioMediaPlayer::unmute_() {
-  if (this->mute_pin_ != nullptr) {
-    this->mute_pin_->digital_write(false);
-  } else {
-    this->set_volume_(this->volume, false);
-  }
+  
+  M5.Speaker.setVolume(this->unmuted_volume_ * 210);
+  this=>set_volume_(this->unmuted_volume_, false);
   this->muted_ = false;
 }
+
 void I2SAudioMediaPlayer::set_volume_(float volume, bool publish) {
   if (this->audio_ != nullptr)
     this->audio_->setVolume(remap<uint8_t, float>(volume, 0.0f, 1.0f, 0, 21));
@@ -148,11 +148,7 @@ void I2SAudioMediaPlayer::start_() {
 
     this->audio_->setI2SCommFMT_LSB(this->i2s_comm_fmt_lsb_);
     this->audio_->forceMono(this->external_dac_channels_ == 1);
-    if (this->mute_pin_ != nullptr) {
-      this->mute_pin_->setup();
-      this->mute_pin_->digital_write(false);
-    }
-
+   
   this->i2s_state_ = I2S_STATE_RUNNING;
   
   this->audio_->setVolume(remap<uint8_t, float>(this->volume, 0.0f, 1.0f, 0, 21));
@@ -188,6 +184,31 @@ void I2SAudioMediaPlayer::stop_() {
   this->state = media_player::MEDIA_PLAYER_STATE_IDLE;
   this->publish_state();
 }
+
+void I2SAudioMediaPlayer::on_audio_data_(const uint8_t *data, size_t length, int sample_rate, int channels, int bits_per_sample) {
+  if (channels == 2) {
+
+    M5.Speaker.setVolume(this->volume * 210);
+    
+    // Downmix stereo to mono
+    size_t num_samples = length / sizeof(int16_t) / 2;
+    std::vector<int16_t> mono(num_samples);
+    const int16_t* stereo = reinterpret_cast<const int16_t*>(data);
+    for (size_t i = 0; i < num_samples; ++i) {
+      mono[i] = (stereo[2*i] + stereo[2*i+1]) / 2;
+    }
+    // Play mono buffer
+    M5.Speaker.playRaw(mono.data(), num_samples, sample_rate);
+    //my_speaker->playRaw(mono.data(), num_samples, sample_rate);
+  } else {
+    // Play mono buffer directly
+    size_t num_samples = length / sizeof(int16_t);
+    const int16_t* mono = reinterpret_cast<const int16_t*>(data);
+    M5.Speaker.playRaw(mono, num_samples, sample_rate);
+    //my_speaker->playRaw(mono, num_samples, sample_rate);
+  }
+}
+  
 
 media_player::MediaPlayerTraits I2SAudioMediaPlayer::get_traits() {
   auto traits = media_player::MediaPlayerTraits();

@@ -5,8 +5,7 @@
 // #include "../i2s_audio.h"
 #include "../m5atoms3_audio.h"
 
-
-#include "esphome/components/media_player/media_player.h"
+#include "esphome/components/media_player/speaker_media_player.h"
 #include "esphome/core/component.h"
 #include "esphome/core/gpio.h"
 #include "esphome/core/helpers.h"
@@ -23,12 +22,15 @@ enum I2SState : uint8_t {
   I2S_STATE_STOPPING,
 };
 
-class I2SAudioMediaPlayer : public Component, public media_player::MediaPlayer, public I2SAudioOut {
+class I2SAudioMediaPlayer : public Component, public media_player::SpeakerMediaPlayer, public I2SAudioOut {
  public:
   void setup() override;
   float get_setup_priority() const override { return esphome::setup_priority::LATE; }
 
   void loop() override;
+
+  void on_audio_data_(const uint8_t *data, size_t length, int sample_rate, int channels, int bits_per_sample) override;
+  
 
   void dump_config() override;
 

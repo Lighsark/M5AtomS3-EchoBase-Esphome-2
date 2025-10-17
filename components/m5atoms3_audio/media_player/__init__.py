@@ -19,7 +19,7 @@ CODEOWNERS = ["@jesserockz"]
 DEPENDENCIES = ["m5atoms3_audio"]
 
 I2SAudioMediaPlayer = i2s_audio_ns.class_(
-    "I2SAudioMediaPlayer", cg.Component, media_player.MediaPlayer, I2SAudioOut
+    "I2SAudioMediaPlayer", cg.Component, media_player.SpeakerMediaPlayer, I2SAudioOut
 )
 
 i2s_dac_mode_t = cg.global_ns.enum("i2s_dac_mode_t")
