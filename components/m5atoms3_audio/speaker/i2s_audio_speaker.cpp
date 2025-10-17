@@ -27,7 +27,7 @@ void I2SAudioSpeaker::setup() {
   
   M5.Speaker.config(cfg);
   M5.Speaker.begin();
-  M5.Speaker.setVolume(128);
+  M5.Speaker.setVolume(210);
 
   // this->buffer_queue_ = xQueueCreate(BUFFER_COUNT, sizeof(DataEvent));
   // this->event_queue_ = xQueueCreate(BUFFER_COUNT, sizeof(TaskEvent));
