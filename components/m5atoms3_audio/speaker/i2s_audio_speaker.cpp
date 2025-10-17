@@ -161,7 +161,7 @@ size_t I2SAudioSpeaker::play(const uint8_t *data, size_t length) {
   int sample_rate = this->sample_rate_; // Make sure this is set correctly elsewhere (e.g., 44100 or 16000)
   //ESP_LOGI(TAG, "playRaw: num_samples=%u, sample_rate=%d", (unsigned)num_samples, sample_rate);
 
-  const int16_t* mono = reinterpret_cast<const int16_t*>(data);
+  //const int16_t* mono = reinterpret_cast<const int16_t*>(data);
   //ESP_LOGI(TAG, "First 8 mono samples:");
   //for (size_t i = 0; i < 8 && i < num_samples; ++i) {
      // ESP_LOGI(TAG, "  [%u] %d", (unsigned)i, mono[i]);
@@ -169,7 +169,7 @@ size_t I2SAudioSpeaker::play(const uint8_t *data, size_t length) {
 
   // Play the mono buffer directly
   //M5.Speaker.playRaw(mono, num_samples, sample_rate);
-  M5.Speaker.playWav(mono, num_samples, sample_rate);
+  M5.Speaker.playWav(data, num_samples, sample_rate);
   return length;
 }
 
