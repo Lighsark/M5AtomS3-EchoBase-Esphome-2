@@ -192,6 +192,13 @@ size_t I2SAudioSpeaker::play(const uint8_t *data, size_t length) {
   return length;
 }
 
+
+void I2SAudioSpeaker::play_tone(float frequency, uint32_t duration) {
+  ESP_LOGI("m5atoms3.speaker", "play_tone: freq=%.1f Hz, duration=%u ms", frequency, duration);
+  // M5Unified expects frequency in Hz and duration in ms
+  M5.Speaker.tone(static_cast<uint16_t>(frequency), duration);
+}
+
 bool I2SAudioSpeaker::has_buffered_data() const 
 { 
   // return uxQueueMessagesWaiting(this->buffer_queue_) > 0;
