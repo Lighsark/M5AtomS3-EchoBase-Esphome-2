@@ -52,11 +52,6 @@ class I2SAudioSpeaker : public Component, public speaker::Speaker, public I2SAud
   void start() override;
   void stop() override;
 
-  float get_volume() const override {
-    // Return the last set volume (0.0 to 1.0)
-    return this->volume_;
-  }
-  
   void set_volume(float volume) override; // <-- Add this line
 
   size_t play(const uint8_t *data, size_t length) override;

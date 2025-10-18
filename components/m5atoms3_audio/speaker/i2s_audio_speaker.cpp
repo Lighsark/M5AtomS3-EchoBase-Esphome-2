@@ -49,7 +49,7 @@ void I2SAudioSpeaker::set_volume(float volume) {
   M5.Speaker.setVolume(hw_volume);
   ESP_LOGI(TAG, "set_volume: volume=%.2f, hw_volume=%d", volume, hw_volume);
 }
-}
+
 
 void I2SAudioSpeaker::player_task(void *params) {
   I2SAudioSpeaker *this_speaker = (I2SAudioSpeaker *) params;
