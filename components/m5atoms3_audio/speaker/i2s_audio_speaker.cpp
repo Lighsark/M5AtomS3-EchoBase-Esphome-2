@@ -88,7 +88,7 @@ void I2SAudioSpeaker::player_task(void *params) {
     }
 
     ESP_LOGI(TAG, "Calling playRaw: num_samples=%u, sample_rate=%d", (unsigned)num_samples, 16000);
-    M5.Speaker.playRaw(mono, num_samples, 16000);
+    M5.Speaker.playRaw(mono, num_samples, this_speaker->sample_rate_);
 
     event.type = TaskEventType::PLAYING;
     xQueueSend(this_speaker->event_queue_, &event, portMAX_DELAY);
