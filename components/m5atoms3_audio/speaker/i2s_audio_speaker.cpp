@@ -159,7 +159,7 @@ size_t I2SAudioSpeaker::play(const uint8_t *data, size_t length) {
 
   size_t num_samples = length / sizeof(int16_t);
   int sample_rate = this->sample_rate_; // Make sure this is set correctly elsewhere (e.g., 44100 or 16000)
-  //ESP_LOGI(TAG, "playRaw: num_samples=%u, sample_rate=%d", (unsigned)num_samples, sample_rate);
+  ESP_LOGI(TAG, "playRaw: num_samples=%u, sample_rate=%d", (unsigned)num_samples, sample_rate);
 
   const int16_t* mono = reinterpret_cast<const int16_t*>(data);
   //ESP_LOGI(TAG, "First 8 mono samples:");
