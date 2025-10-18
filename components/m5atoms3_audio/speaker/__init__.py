@@ -49,4 +49,4 @@ async def to_code(config):
     if config[CONF_SAMPLE_RATE]:
         cg.add(var.set_sample_rate(config[CONF_SAMPLE_RATE]))
 
-speaker.SPEAKER_PLATFORMS["m5atoms3_audio"] = (I2SAudioSpeaker, CONFIG_SCHEMA, to_code)
+##speaker.SPEAKER_PLATFORMS["m5atoms3_audio"] = (I2SAudioSpeaker, CONFIG_SCHEMA, to_code)
