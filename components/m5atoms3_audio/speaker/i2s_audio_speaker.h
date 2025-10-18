@@ -52,6 +52,13 @@ class I2SAudioSpeaker : public Component, public speaker::Speaker, public I2SAud
   void start() override;
   void stop() override;
 
+  float get_volume() const override {
+    // Return the last set volume (0.0 to 1.0)
+    return this->volume_;
+  }
+  
+  void set_volume(float volume) override; // <-- Add this line
+
   size_t play(const uint8_t *data, size_t length) override;
 
   bool has_buffered_data() const override;
@@ -65,7 +72,8 @@ class I2SAudioSpeaker : public Component, public speaker::Speaker, public I2SAud
   size_t buffer_size_ = 1024;
   uint32_t sample_rate_ = 44100;
   static void player_task(void *params);
-  
+  float volume_ = 1.0f;
+
   TaskHandle_t player_task_handle_{nullptr};
   QueueHandle_t buffer_queue_;
   QueueHandle_t event_queue_;

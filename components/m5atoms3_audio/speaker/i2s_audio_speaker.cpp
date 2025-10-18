@@ -43,6 +43,14 @@ void I2SAudioSpeaker::start_() {
   // xTaskCreate(I2SAudioSpeaker::player_task, "speaker_task", 8192, (void *) this, 1, &this->player_task_handle_);
 }
 
+void I2SAudioSpeaker::set_volume(float volume) {
+  this->volume_ = volume;
+  int hw_volume = static_cast<int>(volume * 210);
+  M5.Speaker.setVolume(hw_volume);
+  ESP_LOGI(TAG, "set_volume: volume=%.2f, hw_volume=%d", volume, hw_volume);
+}
+}
+
 void I2SAudioSpeaker::player_task(void *params) {
   I2SAudioSpeaker *this_speaker = (I2SAudioSpeaker *) params;
 
@@ -162,6 +170,11 @@ size_t I2SAudioSpeaker::play(const uint8_t *data, size_t length) {
   ESP_LOGI(TAG, "playRaw: num_samples=%u, sample_rate=%d", (unsigned)num_samples, sample_rate);
 
   const int16_t* mono = reinterpret_cast<const int16_t*>(data);
+
+  for (size_t i = 1; i < num_samples; ++i) {
+     mono[i] = (mono[i] + mono[i-1]) / 2;
+  }
+
   //ESP_LOGI(TAG, "First 8 mono samples:");
   //for (size_t i = 0; i < 8 && i < num_samples; ++i) {
      // ESP_LOGI(TAG, "  [%u] %d", (unsigned)i, mono[i]);
