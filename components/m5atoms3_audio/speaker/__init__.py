@@ -20,9 +20,20 @@ CODEOWNERS = ["@jesserockz"]
 # DEPENDENCIES = ["i2s_audio"]
 DEPENDENCIES = ["m5atoms3_audio"]
 
+AUTO_LOAD = ['speaker']
+
 I2SAudioSpeaker = i2s_audio_ns.class_(
     "I2SAudioSpeaker", cg.Component, speaker.Speaker, I2SAudioOut
 )
+
+
+
+
+# ... your existing codegen and schema ...
+
+# Register play_tone action
+speaker.SPEAKER_ACTIONS.append('play_tone')
+
 
 CONFIG_SCHEMA = speaker.SPEAKER_SCHEMA.extend(
     {
