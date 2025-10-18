@@ -27,10 +27,6 @@ I2SAudioSpeaker = i2s_audio_ns.class_(
 )
 
 
-
-
-# ... your existing codegen and schema ...
-
 CONFIG_SCHEMA = speaker.SPEAKER_SCHEMA.extend(
     {
         cv.GenerateID(): cv.declare_id(I2SAudioSpeaker),
@@ -41,6 +37,9 @@ CONFIG_SCHEMA = speaker.SPEAKER_SCHEMA.extend(
     }
 )
 
+
+speaker.SPEAKER_PLATFORM_SCHEMA = CONFIG_SCHEMA
+speaker.SPEAKER_PLATFORMS['m5atoms3_audio'] = I2SAudioSpeaker
 
 async def to_code(config):
 
