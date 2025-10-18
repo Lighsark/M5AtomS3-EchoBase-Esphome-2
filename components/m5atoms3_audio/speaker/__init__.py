@@ -15,15 +15,14 @@ CONF_BUFFER_SIZE = "buffer_size"
 CONF_DMA_BUF_COUNT = "buffer_count"
 CONF_SAMPLE_RATE = "sample_rate"
 
-CODEOWNERS = ["@jesserockz"]
-DEPENDENCIES = ["m5atoms3_audio"]
 
-AUTO_LOAD = ['speaker']
+CODEOWNERS = ["@jesserockz"]
+# DEPENDENCIES = ["i2s_audio"]
+DEPENDENCIES = ["m5atoms3_audio"]
 
 I2SAudioSpeaker = i2s_audio_ns.class_(
     "I2SAudioSpeaker", cg.Component, speaker.Speaker, I2SAudioOut
 )
-
 
 CONFIG_SCHEMA = speaker.SPEAKER_SCHEMA.extend(
     {
@@ -35,8 +34,9 @@ CONFIG_SCHEMA = speaker.SPEAKER_SCHEMA.extend(
     }
 )
 
-##@cg.register_platform("speaker", "m5atoms3_audio", I2SAudioSpeaker)
+
 async def to_code(config):
+
     var = cg.new_Pvariable(config[CONF_ID])
     await cg.register_component(var, config)
     await speaker.register_speaker(var, config)
@@ -48,5 +48,3 @@ async def to_code(config):
         cg.add(var.set_buffer_size(config[CONF_DMA_BUF_COUNT]))
     if config[CONF_SAMPLE_RATE]:
         cg.add(var.set_sample_rate(config[CONF_SAMPLE_RATE]))
-
-##speaker.SPEAKER_PLATFORMS["m5atoms3_audio"] = (I2SAudioSpeaker, CONFIG_SCHEMA, to_code)
