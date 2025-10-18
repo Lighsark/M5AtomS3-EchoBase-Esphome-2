@@ -28,9 +28,9 @@ CONFIG_SCHEMA = speaker.SPEAKER_SCHEMA.extend(
     {
         cv.GenerateID(): cv.declare_id(I2SAudioSpeaker),
         cv.GenerateID(CONF_I2S_AUDIO_ID): cv.use_id(I2SAudioComponent),
-        cv.Optional(CONF_BUFFER_SIZE, default=1024): cv.int_range(min=256, max=2048),
-        cv.Optional(CONF_DMA_BUF_COUNT, default=8): cv.int_range(min=2, max=16),
-        cv.Optional(CONF_SAMPLE_RATE, default=16000): cv.int_range(min=8000, max=48000),
+        cv.Optional(CONF_BUFFER_SIZE, default=4096): cv.int_range(min=256, max=8192),
+        cv.Optional(CONF_DMA_BUF_COUNT, default=8): cv.int_range(min=2, max=64),
+        cv.Optional(CONF_SAMPLE_RATE, default=44100): cv.int_range(min=8000, max=48000),
     }
 )
 
