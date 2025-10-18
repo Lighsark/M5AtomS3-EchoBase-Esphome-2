@@ -150,7 +150,7 @@ void I2SAudioSpeaker::loop() {
 }
 
 size_t I2SAudioSpeaker::play(const uint8_t *data, size_t length) {
-  ESP_LOGI(TAG, "play() called: state=%d, length=%u", (int)this->state_, (unsigned)length);
+  ESP_LOGI(TAG, "play() called: state=%d, length=%u, sample_rate_=%d", (int)this->state_, (unsigned)length, this->sample_rate_);
 
   if (this->state_ != speaker::STATE_RUNNING && this->state_ != speaker::STATE_STARTING) {
   //   ESP_LOGW(TAG, "play() called while not running/starting, calling start()");
