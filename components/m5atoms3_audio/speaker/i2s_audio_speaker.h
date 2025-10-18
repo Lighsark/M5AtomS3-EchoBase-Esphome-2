@@ -53,7 +53,7 @@ class I2SAudioSpeaker : public Component, public speaker::Speaker, public I2SAud
   void stop() override;
 
   void set_volume(float volume) override; // <-- Add this line
-  void play_tone(float frequency, uint32_t duration) override;
+  void play_tone(float frequency, uint32_t duration);
   size_t play(const uint8_t *data, size_t length) override;
 
   bool has_buffered_data() const override;
