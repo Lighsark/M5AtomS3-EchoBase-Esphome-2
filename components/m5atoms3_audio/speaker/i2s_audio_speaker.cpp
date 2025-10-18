@@ -161,28 +161,22 @@ size_t I2SAudioSpeaker::play(const uint8_t *data, size_t length) {
   ESP_LOGI(TAG, "play() called: state=%d, length=%u, sample_rate_=%d", (int)this->state_, (unsigned)length, this->sample_rate_);
 
   if (this->state_ != speaker::STATE_RUNNING && this->state_ != speaker::STATE_STARTING) {
-  //   ESP_LOGW(TAG, "play() called while not running/starting, calling start()");
     this->start();
   }
 
   size_t num_samples = length / sizeof(int16_t);
-  int sample_rate = this->sample_rate_; // Make sure this is set correctly elsewhere (e.g., 44100 or 16000)
+  int sample_rate = this->sample_rate_;
   ESP_LOGI(TAG, "playRaw: num_samples=%u, sample_rate=%d", (unsigned)num_samples, sample_rate);
 
-  const int16_t* mono = reinterpret_cast<const int16_t*>(data);
+  const int16_t* mono_in = reinterpret_cast<const int16_t*>(data);
+  std::vector<int16_t> mono(mono_in, mono_in + num_samples);
 
+  // Apply simple smoothing filter
   for (size_t i = 1; i < num_samples; ++i) {
-     mono[i] = (mono[i] + mono[i-1]) / 2;
+    mono[i] = (mono[i] + mono[i-1]) / 2;
   }
 
-  //ESP_LOGI(TAG, "First 8 mono samples:");
-  //for (size_t i = 0; i < 8 && i < num_samples; ++i) {
-     // ESP_LOGI(TAG, "  [%u] %d", (unsigned)i, mono[i]);
-  //}
-
-  // Play the mono buffer directly
-  M5.Speaker.playRaw(mono, num_samples, sample_rate);
-  //M5.Speaker.playWav(data, num_samples, sample_rate);
+  M5.Speaker.playRaw(mono.data(), num_samples, sample_rate);
   return length;
 }
 
