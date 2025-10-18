@@ -20,25 +20,31 @@ void I2SAudioSpeaker::setup() {
   // ESP_LOGCONFIG(TAG, "Setting up I2S Audio Speaker...");
   ESP_LOGI(TAG, "setup");
   auto cfg = M5.Speaker.config();
-  cfg.task_priority = 15;
+  cfg.task_priority = 2;
+  cfg.sample_rate = this->sample_rate_;
+  cfg.stereo = false;
+  cfg.buzzer = false;
+  cfg.use_dac = false;
+  cfg.dac_zero_level = 0;
+  cfg.magnification = 0;
+  cfg.dma_buf_len = this->buffer_size_ / 2;
+  cfg.dma_buf_count = this->dma_buf_count_;
+  cfg.task_pinned_core = ~0;
+  cfg.i2s_port = i2s_port_t::I2S_NUM_0;
   //cfg.dma_buf_count = this->dma_buf_count_;
   //cfg.dma_buf_len = this->buffer_size_;
   //cfg.sample_rate = this->sample_rate_;
-  M5.Speaker.setChannels(1); //mono
-  M5.Speaker.setSampleRate(this->sample_rate_);
-  M5.Speaker.setBitsPerSample(16);
-  M5.Speaker.setVolume(210);
-  M5.Speaker.setDACMode(false); // Use I2S DAC
-  M5.Speaker.setBufferSize(4096;
   M5.Speaker.config(cfg);
-  M5.Speaker.begin();
   M5.Speaker.setVolume(210);
 
   // this->buffer_queue_ = xQueueCreate(BUFFER_COUNT, sizeof(DataEvent));
   // this->event_queue_ = xQueueCreate(BUFFER_COUNT, sizeof(TaskEvent));
 }
 
-void I2SAudioSpeaker::start() { this->state_ = speaker::STATE_STARTING; }
+void I2SAudioSpeaker::start() { 
+  this->state_ = speaker::STATE_STARTING; 
+  M5.Speaker.begin();
+}
 void I2SAudioSpeaker::start_() {
   // if (!this->parent_->try_lock()) {
   //   return;  // Waiting for another i2s component to return lock
@@ -126,6 +132,7 @@ void I2SAudioSpeaker::stop() {
     return;
   if (this->state_ == speaker::STATE_STARTING) {
     this->state_ = speaker::STATE_STOPPED;
+    M5.Speaker.end();
     return;
   }
   this->state_ = speaker::STATE_STOPPING;
