@@ -31,10 +31,6 @@ I2SAudioSpeaker = i2s_audio_ns.class_(
 
 # ... your existing codegen and schema ...
 
-# Register play_tone action
-speaker.SPEAKER_ACTIONS.append('play_tone')
-
-
 CONFIG_SCHEMA = speaker.SPEAKER_SCHEMA.extend(
     {
         cv.GenerateID(): cv.declare_id(I2SAudioSpeaker),
