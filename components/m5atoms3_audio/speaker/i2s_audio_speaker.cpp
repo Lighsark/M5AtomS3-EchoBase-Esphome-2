@@ -24,7 +24,12 @@ void I2SAudioSpeaker::setup() {
   //cfg.dma_buf_count = this->dma_buf_count_;
   //cfg.dma_buf_len = this->buffer_size_;
   //cfg.sample_rate = this->sample_rate_;
-  
+  M5.Speaker.setChannels(1); //mono
+  M5.Speaker.setSampleRate(this->sample_rate_);
+  M5.Speaker.setBitsPerSample(16);
+  M5.Speaker.setVolume(210);
+  M5.Speaker.setDACMode(false); // Use I2S DAC
+  M5.Speaker.setBufferSize(4096;
   M5.Speaker.config(cfg);
   M5.Speaker.begin();
   M5.Speaker.setVolume(210);
@@ -50,7 +55,7 @@ void I2SAudioSpeaker::set_volume(float volume) {
   ESP_LOGI(TAG, "set_volume: volume=%.2f, hw_volume=%d", volume, hw_volume);
 }
 
-
+/** 
 void I2SAudioSpeaker::player_task(void *params) {
   I2SAudioSpeaker *this_speaker = (I2SAudioSpeaker *) params;
 
@@ -59,9 +64,9 @@ void I2SAudioSpeaker::player_task(void *params) {
   xQueueSend(this_speaker->event_queue_, &event, portMAX_DELAY);
 
   auto cfg = M5.Speaker.config();
-  cfg.dma_buf_count = this_speaker-> dma_buf_count_;
-  cfg.dma_buf_len = this_speaker->buffer_size_ / 2;
-  cfg.task_priority = 15;
+  //cfg.dma_buf_count = this_speaker-> dma_buf_count_;
+  //cfg.dma_buf_len = this_speaker->buffer_size_ / 2;
+  //cfg.task_priority = 15;
   M5.Speaker.config(cfg);
   M5.Mic.end();
   M5.Speaker.begin();
@@ -115,7 +120,7 @@ void I2SAudioSpeaker::player_task(void *params) {
     delay(10);
   }
 }
-
+*/
 void I2SAudioSpeaker::stop() {
   if (this->state_ == speaker::STATE_STOPPED)
     return;
