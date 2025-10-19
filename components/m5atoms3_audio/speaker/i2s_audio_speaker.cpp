@@ -21,6 +21,10 @@ void I2SAudioSpeaker::setup() {
   ESP_LOGI(TAG, "setup");
   auto cfg = M5.Speaker.config();
   cfg.task_priority = 2;
+  cfg.dma_buf_count = this->dma_buf_count_;
+  cfg.dma_buf_len = this->buffer_size_ / 2;
+  cfg.use_dac = true;         // Enable internal DAC
+  cfg.magnification = 1;      // Set gain to 1 (or higher
   //cfg.dma_buf_count = this->dma_buf_count_;
   //cfg.dma_buf_len = this->buffer_size_;
   //cfg.sample_rate = this->sample_rate_;
