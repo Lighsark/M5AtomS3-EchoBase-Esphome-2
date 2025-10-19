@@ -24,9 +24,9 @@ void I2SAudioSpeaker::setup() {
   cfg.sample_rate = this->sample_rate_;
   cfg.stereo = false;
   cfg.buzzer = false;
-  cfg.use_dac = false;
+  cfg.use_dac = true;
   cfg.dac_zero_level = 0;
-  cfg.magnification = 0;
+  cfg.magnification = 1;
   cfg.dma_buf_len = this->buffer_size_ / 2;
   cfg.dma_buf_count = this->dma_buf_count_;
   cfg.task_pinned_core = ~0;
@@ -174,6 +174,7 @@ size_t I2SAudioSpeaker::play(const uint8_t *data, size_t length) {
 
   if (this->state_ != speaker::STATE_RUNNING && this->state_ != speaker::STATE_STARTING) {
     this->start();
+    M5.Speaker.begin();
   }
 
   size_t num_samples = length / sizeof(int16_t);
@@ -188,7 +189,7 @@ size_t I2SAudioSpeaker::play(const uint8_t *data, size_t length) {
     mono[i] = (mono[i] + mono[i-1]) / 2;
   }
 
-  M5.Speaker.playRaw(mono.data(), num_samples, sample_rate);
+  M5.Speaker.playRaw(mono.data(), num_samples, sample_rate,);
   return length;
 }
 
