@@ -189,7 +189,7 @@ size_t I2SAudioSpeaker::play(const uint8_t *data, size_t length) {
     mono[i] = (mono[i] + mono[i-1]) / 2;
   }
 
-  M5.Speaker.playRaw(mono.data(), num_samples, sample_rate,);
+  M5.Speaker.playRaw(mono.data(), num_samples, sample_rate);
   return length;
 }
 
