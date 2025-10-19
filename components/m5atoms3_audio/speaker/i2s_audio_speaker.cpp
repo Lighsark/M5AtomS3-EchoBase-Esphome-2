@@ -20,15 +20,14 @@ void I2SAudioSpeaker::setup() {
   // ESP_LOGCONFIG(TAG, "Setting up I2S Audio Speaker...");
   ESP_LOGI(TAG, "setup");
   auto cfg = M5.Speaker.config();
-  cfg.task_priority = 15;
+  cfg.task_priority = 2;
   //cfg.dma_buf_count = this->dma_buf_count_;
   //cfg.dma_buf_len = this->buffer_size_;
   //cfg.sample_rate = this->sample_rate_;
   
   M5.Speaker.config(cfg);
-  M5.Speaker.begin();
+  
   M5.Speaker.setVolume(210);
-
   // this->buffer_queue_ = xQueueCreate(BUFFER_COUNT, sizeof(DataEvent));
   // this->event_queue_ = xQueueCreate(BUFFER_COUNT, sizeof(TaskEvent));
 }
@@ -39,7 +38,7 @@ void I2SAudioSpeaker::start_() {
   //   return;  // Waiting for another i2s component to return lock
   // }
   this->state_ = speaker::STATE_RUNNING;
-
+  M5.Speaker.begin();
   // xTaskCreate(I2SAudioSpeaker::player_task, "speaker_task", 8192, (void *) this, 1, &this->player_task_handle_);
 }
 
@@ -121,6 +120,7 @@ void I2SAudioSpeaker::stop() {
     return;
   if (this->state_ == speaker::STATE_STARTING) {
     this->state_ = speaker::STATE_STOPPED;
+    M5.Speaker.end();
     return;
   }
   this->state_ = speaker::STATE_STOPPING;
@@ -172,11 +172,11 @@ size_t I2SAudioSpeaker::play(const uint8_t *data, size_t length) {
   std::vector<int16_t> mono(mono_in, mono_in + num_samples);
 
   // Apply simple smoothing filter
-  for (size_t i = 1; i < num_samples; ++i) {
-    mono[i] = (mono[i] + mono[i-1]) / 2;
-  }
+  //for (size_t i = 1; i < num_samples; ++i) {
+  //  mono[i] = (mono[i] + mono[i-1]) / 2;
+  //}
 
-  M5.Speaker.playRaw(mono.data(), num_samples, sample_rate);
+  M5.Speaker.playRaw(mono.data(), num_samples, sample_rate, false, 1, -1, true);
   return length;
 }
 
