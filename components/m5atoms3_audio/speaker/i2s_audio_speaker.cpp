@@ -23,7 +23,7 @@ void I2SAudioSpeaker::setup() {
   cfg.task_priority = 15;
   M5.Speaker.config(cfg);
   M5.Speaker.begin();
-  M5.Speaker.setVolume(200);
+  M5.Speaker.setVolume(this->volume_ * 225); // volume 0.0 to 1.0 mapped to 0 to 100
 
   // this->buffer_queue_ = xQueueCreate(BUFFER_COUNT, sizeof(DataEvent));
   // this->event_queue_ = xQueueCreate(BUFFER_COUNT, sizeof(TaskEvent));
@@ -146,22 +146,22 @@ void I2SAudioSpeaker::loop() {
 }
 
 size_t I2SAudioSpeaker::play(const uint8_t *data, size_t length) {
-  ESP_LOGI(TAG, "play() called: state=%d, length=%u", (int)this->state_, (unsigned)length);
+//  ESP_LOGI(TAG, "play() called: state=%d, length=%u", (int)this->state_, (unsigned)length);
 
   if (this->state_ != speaker::STATE_RUNNING && this->state_ != speaker::STATE_STARTING) {
-    ESP_LOGW(TAG, "play() called while not running/starting, calling start()");
+//    ESP_LOGW(TAG, "play() called while not running/starting, calling start()");
     this->start();
   }
 
   size_t num_samples = length / sizeof(int16_t);
   int sample_rate = this->sample_rate_; // Make sure this is set correctly elsewhere (e.g., 44100 or 16000)
-  ESP_LOGI(TAG, "playRaw: num_samples=%u, sample_rate=%d", (unsigned)num_samples, sample_rate);
+ // ESP_LOGI(TAG, "playRaw: num_samples=%u, sample_rate=%d", (unsigned)num_samples, sample_rate);
 
   const int16_t* mono = reinterpret_cast<const int16_t*>(data);
-  ESP_LOGI(TAG, "First 8 mono samples:");
-  for (size_t i = 0; i < 8 && i < num_samples; ++i) {
-      ESP_LOGI(TAG, "  [%u] %d", (unsigned)i, mono[i]);
-  }
+//  ESP_LOGI(TAG, "First 8 mono samples:");
+//  for (size_t i = 0; i < 8 && i < num_samples; ++i) {
+//      ESP_LOGI(TAG, "  [%u] %d", (unsigned)i, mono[i]);
+//  }
 
   // Play the mono buffer directly
   M5.Speaker.playRaw(mono, num_samples, sample_rate);
