@@ -14,7 +14,7 @@ from .. import (
 CONF_BUFFER_SIZE = "buffer_size"
 CONF_DMA_BUF_COUNT = "buffer_count"
 CONF_SAMPLE_RATE = "sample_rate"
-
+CONF_VOLUME = "volume"
 
 CODEOWNERS = ["@jesserockz"]
 # DEPENDENCIES = ["i2s_audio"]
@@ -31,6 +31,7 @@ CONFIG_SCHEMA = speaker.SPEAKER_SCHEMA.extend(
         cv.Optional(CONF_BUFFER_SIZE, default=4096): cv.int_range(min=256, max=8192),
         cv.Optional(CONF_DMA_BUF_COUNT, default=8): cv.int_range(min=2, max=64),
         cv.Optional(CONF_SAMPLE_RATE, default=44100): cv.int_range(min=8000, max=48000),
+        cv.Optional(CONF_VOLUME, default=0.5): cv.float_range(min=0.0, max=1.0),
     }
 )
 
@@ -48,3 +49,5 @@ async def to_code(config):
         cg.add(var.set_buffer_size(config[CONF_DMA_BUF_COUNT]))
     if config[CONF_SAMPLE_RATE]:
         cg.add(var.set_sample_rate(config[CONF_SAMPLE_RATE]))
+    if config[CONF_VOLUME]:
+        cg.add(var.set_volume(config[CONF_VOLUME]))

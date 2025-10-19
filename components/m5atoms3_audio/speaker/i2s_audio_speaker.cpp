@@ -21,8 +21,8 @@ void I2SAudioSpeaker::setup() {
   ESP_LOGI(TAG, "setup");
   auto cfg = M5.Speaker.config();
   cfg.task_priority = 10;
-  cfg.dma_buf_count = this->dma_buf_count_;
-  cfg.dma_buf_len = this->buffer_size_;
+  //cfg.dma_buf_count = this->dma_buf_count_;
+  //cfg.dma_buf_len = this->buffer_size_;
   //cfg.use_dac = true;         // Enable internal DAC
   //cfg.magnification = 12;      // Set gain to 1 (or higher
   //cfg.dma_buf_count = this->dma_buf_count_;
@@ -164,7 +164,7 @@ void I2SAudioSpeaker::loop() {
 }
 
 size_t I2SAudioSpeaker::play(const uint8_t *data, size_t length) {
-  ESP_LOGI(TAG, "play() called: state=%d, length=%u, sample_rate_=%d", (int)this->state_, (unsigned)length, this->sample_rate_);
+  //ESP_LOGI(TAG, "play() called: state=%d, length=%u, sample_rate_=%d", (int)this->state_, (unsigned)length, this->sample_rate_);
 
   if (this->state_ != speaker::STATE_RUNNING && this->state_ != speaker::STATE_STARTING) {
     this->start();
@@ -172,17 +172,17 @@ size_t I2SAudioSpeaker::play(const uint8_t *data, size_t length) {
 
   size_t num_samples = length / sizeof(int16_t);
   int sample_rate = this->sample_rate_;
-  ESP_LOGI(TAG, "playRaw: num_samples=%u, sample_rate=%d", (unsigned)num_samples, sample_rate);
+  //ESP_LOGI(TAG, "playRaw: num_samples=%u, sample_rate=%d", (unsigned)num_samples, sample_rate);
 
   const int16_t* mono_in = reinterpret_cast<const int16_t*>(data);
-  std::vector<int16_t> mono(mono_in, mono_in + num_samples);
+  //std::vector<int16_t> mono(mono_in, mono_in + num_samples);
 
   // Apply simple smoothing filter
   //for (size_t i = 1; i < num_samples; ++i) {
   //  mono[i] = (mono[i] + mono[i-1]) / 2;
   //}
 
-  M5.Speaker.playRaw(mono.data(), num_samples, sample_rate, false, 1, -1, true);
+  M5.Speaker.playRaw(mono_in, num_samples, sample_rate, false, 1, -1, true);
   return length;
 }
 
