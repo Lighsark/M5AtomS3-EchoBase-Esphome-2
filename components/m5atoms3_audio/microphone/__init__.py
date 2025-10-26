@@ -11,7 +11,7 @@ from .. import (
     I2SAudioComponent,
     I2SAudioIn,
     CONF_I2S_AUDIO_ID,
-    CONF_I2S_DIN_PIN,
+#    CONF_I2S_DIN_PIN,
 )
 
 CODEOWNERS = ["@jesserockz"]
